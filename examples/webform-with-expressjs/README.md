@@ -85,9 +85,15 @@ Once selected, your integration will have permission to read/write content on th
 
 #### 4. Run code
 
+Run the following command:
+
 ```zsh
 node server.js
 ```
+
+Check the terminal response to see which port to use when viewing the app locally in your browser of choice (`localhost:<port>`).
+
+Keep the browser console open to see API responses, including errors.
 
 ### Using this app
 

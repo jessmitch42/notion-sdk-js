@@ -1,23 +1,23 @@
-require("dotenv").config();
-const express = require("express");
-const app = express();
+require("dotenv").config()
+const express = require("express")
+const app = express()
 
-const { Client } = require("@notionhq/client");
-const notion = new Client({ auth: process.env.NOTION_KEY });
+const { Client } = require("@notionhq/client")
+const notion = new Client({ auth: process.env.NOTION_KEY })
 
 // http://expressjs.com/en/starter/static-files.html
-app.use(express.static("public"));
-app.use(express.json()); // for parsing application/json
+app.use(express.static("public"))
+app.use(express.json()) // for parsing application/json
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
-  response.sendFile(__dirname + "/views/index.html");
-});
+  response.sendFile(__dirname + "/views/index.html")
+})
 
 // Create new database. The page ID is set in the environment variables.
 app.post("/databases", async function (request, response) {
-  const pageId = process.env.NOTION_PAGE_ID;
-  const title = request.body.dbName;
+  const pageId = process.env.NOTION_PAGE_ID
+  const title = request.body.dbName
 
   try {
     const newDb = await notion.databases.create({
@@ -38,18 +38,16 @@ app.post("/databases", async function (request, response) {
           title: {},
         },
       },
-    });
-    response.json({ message: "success!", data: newDb });
+    })
+    response.json({ message: "success!", data: newDb })
   } catch (error) {
-    response.json({ message: "error", error });
+    response.json({ message: "error", error })
   }
-});
+})
 
 // Create new page. The database ID is provided in the web form.
 app.post("/pages", async function (request, response) {
-  const dbID = request.body.dbID;
-  const pageName = request.body.pageName;
-  const header = request.body.header;
+  const { dbID, pageName, header } = request.body
 
   try {
     const newPage = await notion.pages.create({
@@ -82,17 +80,16 @@ app.post("/pages", async function (request, response) {
           },
         },
       ],
-    });
-    response.json({ message: "success!", data: newPage });
+    })
+    response.json({ message: "success!", data: newPage })
   } catch (error) {
-    response.json({ message: "error", error });
+    response.json({ message: "error", error })
   }
-});
+})
 
 // Create new block (page content). The page ID is provided in the web form.
 app.post("/blocks", async function (request, response) {
-  const pageID = request.body.pageID;
-  const content = request.body.content;
+  const { pageID, content } = request.body
 
   try {
     const newBlock = await notion.blocks.children.append({
@@ -111,17 +108,16 @@ app.post("/blocks", async function (request, response) {
           },
         },
       ],
-    });
-    response.json({ message: "success!", data: newBlock });
+    })
+    response.json({ message: "success!", data: newBlock })
   } catch (error) {
-    response.json({ message: "error", error });
+    response.json({ message: "error", error })
   }
-});
+})
 
 // Create new page comments. The page ID is provided in the web form.
 app.post("/comments", async function (request, response) {
-  const pageID = request.body.pageID;
-  const comment = request.body.comment;
+  const { pageID, comment } = request.body
 
   try {
     const newComment = await notion.comments.create({
@@ -135,14 +131,14 @@ app.post("/comments", async function (request, response) {
           },
         },
       ],
-    });
-    response.json({ message: "success!", data: newComment });
+    })
+    response.json({ message: "success!", data: newComment })
   } catch (error) {
-    response.json({ message: "error", error });
+    response.json({ message: "error", error })
   }
-});
+})
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
-});
+  console.log("Your app is listening on port " + listener.address().port)
+})
